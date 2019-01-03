@@ -27,7 +27,7 @@ class gameWindow(pyglet.window.Window):
         self.mons3 = load_img('quai3.png')
         self.mons_list = [self.mons1, self.mons2, self.mons3]
         self.mons_draw = []
-        self.shot_ene = load_img('dan.png')
+        self.shot_ene = load_img('dan1.png')
         self.shot_enemy_list = []
         self.fire_enemy_rate = 0
 
@@ -121,6 +121,8 @@ class gameWindow(pyglet.window.Window):
                 bul.draw()
             for mons in self.mons_draw:
                 mons.draw()
+            for sho in self.shot_enemy_list:
+                sho.draw()
             self.exp_batch.draw()
 
 
@@ -133,19 +135,19 @@ class gameWindow(pyglet.window.Window):
 
 
     def update_shot_enemy(self, dt):
-        for gun in self.shot_enemy_list:
-            gun.update()
-            gun.posy -= 200 * dt
-            if gun.posy < 0:
-                self.shot_enemy_list.remove(gun)
+        for shot in self.shot_enemy_list:
+            shot.update()
+            shot.posy -= 200 * dt
+            if shot.posy < 0:
+                self.shot_enemy_list.remove(shot)
 
 
     def bullet(self, dt):
         self.fire_enemy_rate -= dt
         if self.fire_enemy_rate <= 0:
             for enemy in self.mons_draw:
-                if True:
-                    self.shot_enemy_list.append(gameObject(enemy.posx + 52, enemy.posy + 191, pyglet.sprite.Sprite(self.shot)))
+                if randint(0, 10) <= 2:
+                    self.shot_enemy_list.append(gameObject(enemy.posx + 200, enemy.posy, pyglet.sprite.Sprite(self.shot_ene)))
             self.fire_enemy_rate += 1
 
 
@@ -169,7 +171,7 @@ class gameWindow(pyglet.window.Window):
             self.player.posy -= self.speed * dt
 
 
-    def update_move_enemy(self, dt):
+    def update_enemy(self, dt):
         for x in self.mons_draw:
             x.update()
             x.posy -= 100 * dt
@@ -195,11 +197,10 @@ class gameWindow(pyglet.window.Window):
                 self.exp_sound.play()
 
 
-    def player_hit_enemy(self, dt):
-        if self.hit(self.player, self.mons_draw):
+    def hit_player(self, dt):
+        if self.hit(self.player, self.mons_draw) or self.hit(self.player, self.shot_enemy_list):
             self.exploit_list.append(pyglet.sprite.Sprite(self.exploit, x=self.player.posx, y=self.player.posy, batch=self.exp_batch))
             self.exp_sound.play()
-            self.alive = False
             self.play = False
 
 
@@ -212,7 +213,7 @@ class gameWindow(pyglet.window.Window):
             self.time_bom += 1.5
 
 
-    def update_enenmy(self, dt):
+    def create_enenmy(self, dt):
         tmp = choice(self.mons_list)
         self.mons_draw.append(gameObject(randint(50, 1200), 700, pyglet.sprite.Sprite(tmp)))
 
@@ -223,7 +224,7 @@ class gameWindow(pyglet.window.Window):
             space.posy -= 200 * dt
             if space.posy <= -1300:
                 self.space_list.remove(space)
-                self.space_list.append(gameObject(0, 780, pyglet.sprite.Sprite(self.space_img)))
+                self.space_list.append(gameObject(0, 770, pyglet.sprite.Sprite(self.space_img)))
 
 
     def update(self, dt):
@@ -235,11 +236,11 @@ class gameWindow(pyglet.window.Window):
             self.bullet(dt)
             self.update_player(dt)
             self.update_space(dt)
-            self.update_move_enemy(dt)
-            if len(self.mons_draw) <= 7:
-                self.update_enenmy(dt)
+            self.update_enemy(dt)
+            if len(self.mons_draw) <= 5:
+                self.create_enenmy(dt)
             self.shot_enemy(dt)
-            self.player_hit_enemy(dt)
+            self.hit_player(dt)
             self.update_exploit(dt)
 
 
