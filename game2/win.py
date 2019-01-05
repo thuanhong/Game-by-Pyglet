@@ -2,7 +2,7 @@ import pyglet
 from pyglet.window import key
 from object import *
 from random import randint, choice
-import math
+from math import sin
 
 
 class gameWindow(pyglet.window.Window):
@@ -46,6 +46,7 @@ class gameWindow(pyglet.window.Window):
         self.exploit_list = []
         self.exp_batch = pyglet.graphics.Batch()
         self.time_bom = 1.5
+        self.wait = 1.5
 
         label = pyglet.text.Label("Score", font_size=36, y=650, x=1000, batch=self.exp_batch)
         self.score = pyglet.text.Label("0", font_size=36, y=650, x=1150, batch=self.exp_batch)
@@ -55,16 +56,13 @@ class gameWindow(pyglet.window.Window):
                                         x= self.width/2,
                                         anchor_x = 'center',
                                         anchor_y = 'center')
+
         back_tmp = pyglet.image.load_animation('img/giphy.gif')
         self.back_ground = pyglet.sprite.Sprite(img=back_tmp)
         self.back_ground.update(scale_x=self.width/self.back_ground.width, scale_y=self.height/self.back_ground.height)
         self.play = False
-        self.play_again = pyglet.text.Label("YOU DEAD, press ENTER to RETURN",
-                                            font_size=45,
-                                            y=self.height/2,
-                                            x= self.width/2,
-                                            anchor_x = 'center',
-                                            anchor_y = 'center')
+        self.alive = False
+
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.RIGHT:
@@ -73,6 +71,7 @@ class gameWindow(pyglet.window.Window):
             self.left = True
         if symbol == key.ENTER:
             self.play = True
+            self.alive = True
         if symbol == key.UP:
             self.up = True
         if symbol == key.DOWN:
@@ -104,6 +103,10 @@ class gameWindow(pyglet.window.Window):
         self.fire_rate = 0
         self.exploit_list.clear()
         self.score.text = '0'
+        self.player.posx = self.width / 2.3
+        self.player.posy = self.height / 7
+        self.wait = 1.5
+        self.time_bom = 1.5
 
 
     def on_draw(self):
@@ -112,6 +115,7 @@ class gameWindow(pyglet.window.Window):
             self.clear()
             self.back_ground.draw()
             self.text.draw()
+            self.bg.play()
         else:
             self.clear()
             for space in self.space_list:
@@ -175,7 +179,7 @@ class gameWindow(pyglet.window.Window):
         for x in self.mons_draw:
             x.update()
             x.posy -= 100 * dt
-            x.posx += math.sin(x.posy/50) * randint(70, 100) * dt
+            x.posx += sin(x.posy/50) * randint(70, 100) * dt
             if x.posy < 0:
                 self.mons_draw.remove(x)
 
@@ -201,6 +205,12 @@ class gameWindow(pyglet.window.Window):
         if self.hit(self.player, self.mons_draw) or self.hit(self.player, self.shot_enemy_list):
             self.exploit_list.append(pyglet.sprite.Sprite(self.exploit, x=self.player.posx, y=self.player.posy, batch=self.exp_batch))
             self.exp_sound.play()
+            self.alive = False
+
+
+    def wait_time(self, dt):
+        self.wait -= 0.1
+        if self.wait <= 0:
             self.play = False
 
 
@@ -224,7 +234,7 @@ class gameWindow(pyglet.window.Window):
             space.posy -= 200 * dt
             if space.posy <= -1300:
                 self.space_list.remove(space)
-                self.space_list.append(gameObject(0, 770, pyglet.sprite.Sprite(self.space_img)))
+                self.space_list.append(gameObject(0, 760, pyglet.sprite.Sprite(self.space_img)))
 
 
     def update(self, dt):
@@ -242,6 +252,9 @@ class gameWindow(pyglet.window.Window):
             self.shot_enemy(dt)
             self.hit_player(dt)
             self.update_exploit(dt)
+        if not self.alive:
+            self.update_exploit(dt)
+            self.wait_time(dt)
 
 
 if __name__ == "__main__":
