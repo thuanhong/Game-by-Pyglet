@@ -115,7 +115,6 @@ class gameWindow(pyglet.window.Window):
             self.clear()
             self.back_ground.draw()
             self.text.draw()
-            self.bg.play()
         else:
             self.clear()
             for space in self.space_list:
