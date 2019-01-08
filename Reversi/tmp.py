@@ -23,7 +23,7 @@ def getValue(bo, statePos, x, y, enemy, diction):
         elif bo[x][y] == enemy:
             list.append([x, y])
         elif bo[x][y] == '.':
-            tmp = [x+y, list]
+            tmp = [x*10+y, list]
             diction.append(tmp)
             return x * 10 + y
         elif bo[x][y] != enemy:
@@ -64,19 +64,17 @@ def choi(enemy):
     print("Player B:" if enemy == 'W' else "Player W:", end=" ")
 
 
-def main(board, enemy):
+def main(board, enemy, pos):
     diction = []
+
+    print_valid_choice(board, enemy, diction)
+    for x in diction:
+        if pos == x[0]:
+            for y in x[1]:
+                board[y[0]][y[1]] = 'B' if enemy == 'W' else 'W'
+            break
+    board[int(pos/10)][int(pos%10)] = 'B' if enemy == 'W' else 'W'
     if enemy is 'B':
         enemy = 'W'
     else:
         enemy = 'B'
-
-    print_valid_choice(board, enemy, diction)
-    for x in diction:
-        if str == x[0]:
-            for y in x[1]:
-                board[y[0]][y[1]] = 'B' if enemy == 'W' else 'W'
-    tmp1 = ord(str[1]) - 49
-    tmp2 = ord(str[0]) - 97
-    board[tmp1][tmp2] = 'B' if enemy == 'W' else 'W'
-    diction = []

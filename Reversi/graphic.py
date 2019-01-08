@@ -1,5 +1,6 @@
 import pyglet
 from tmp import *
+from pyglet.window import mouse
 
 
 class chess:
@@ -36,10 +37,9 @@ class gameWindow(pyglet.window.Window):
                       ['.', '.', '.', '.', '.', '.', '.', '.']]
          self.enemy = 'B'
          self.mark_list = []
-         tmp_list = print_valid_choice(self.board, self.enemy)
-         for x in tmp_list:
-             self.mark_list.append(chess(x/10 * self.black.width + 535 , x%10 * self.black.width + 290, self.mark))
-
+         self.tmp_list = print_valid_choice(self.board, self.enemy)
+         for x in self.tmp_list:
+             self.mark_list.append(chess(int(x/10) * self.black.width + 550 , int(x%10) * self.black.width + 290, self.mark))
 
     def on_draw(self):
         self.clear()
@@ -54,8 +54,24 @@ class gameWindow(pyglet.window.Window):
         for cross in self.mark_list:
             cross.draw()
 
+    def hit(self, take, list):
+        for mark in list:
+            if take[0] in range(mark.x, mark.x + 20) and take[1] in range(mark.y, mark.y + 20):
+                for x in self.tmp_list:
+                    if int(x/10) * self.black.width + 550 == mark.x:
+                        return x
+        return False
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == mouse.LEFT:
+            temp = self.hit([x, y], self.mark_list)
+            if temp != False:
+                main(self.board, self.enemy, temp)
+                print(self.enemy)
+
     def update(self, dt):
-        pass
+        self.on_draw()
+
 
 
 if __name__ == '__main__':
