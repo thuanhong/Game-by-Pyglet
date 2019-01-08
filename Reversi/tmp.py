@@ -66,7 +66,6 @@ def choi(enemy):
 
 def main(board, enemy, pos):
     diction = []
-
     print_valid_choice(board, enemy, diction)
     for x in diction:
         if pos == x[0]:
@@ -78,3 +77,4 @@ def main(board, enemy, pos):
         enemy = 'W'
     else:
         enemy = 'B'
+    return enemy

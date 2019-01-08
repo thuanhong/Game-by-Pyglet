@@ -8,8 +8,6 @@ class chess:
         self.x = x
         self.y = y
         if img != None:
-            img.anchor_x = img.width // 2
-            img.anchor_y = img.width // 2
             self.sprite = pyglet.sprite.Sprite(img)
             self.sprite.x = self.x
             self.sprite.y = self.y
@@ -56,7 +54,7 @@ class gameWindow(pyglet.window.Window):
 
     def hit(self, take, list):
         for mark in list:
-            if take[0] in range(mark.x, mark.x + 20) and take[1] in range(mark.y, mark.y + 20):
+            if take[0] in range(mark.x, mark.x + 39) and take[1] in range(mark.y, mark.y + 39):
                 for x in self.tmp_list:
                     if int(x/10) * self.black.width + 550 == mark.x:
                         return x
@@ -66,11 +64,15 @@ class gameWindow(pyglet.window.Window):
         if button == mouse.LEFT:
             temp = self.hit([x, y], self.mark_list)
             if temp != False:
-                main(self.board, self.enemy, temp)
-                print(self.enemy)
+                self.enemy = main(self.board, self.enemy, temp)
+                self.on_draw()
 
     def update(self, dt):
-        self.on_draw()
+        self.mark_list.clear()
+        self.tmp_list = print_valid_choice(self.board, self.enemy)
+        for x in self.tmp_list:
+            self.mark_list.append(chess(int(x/10) * self.black.width + 550 , int(x%10) * self.black.width + 290, self.mark))
+
 
 
 
