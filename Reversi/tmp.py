@@ -71,7 +71,7 @@ def main(board, enemy, pos):
         if pos == x[0]:
             for y in x[1]:
                 board[y[0]][y[1]] = 'B' if enemy == 'W' else 'W'
-            break
+
     board[int(pos/10)][int(pos%10)] = 'B' if enemy == 'W' else 'W'
     if enemy is 'B':
         enemy = 'W'

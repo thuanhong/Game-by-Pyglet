@@ -33,7 +33,9 @@ class gameWindow(pyglet.window.Window):
                       ['.', '.', '.', '.', '.', '.', '.', '.'],
                       ['.', '.', '.', '.', '.', '.', '.', '.'],
                       ['.', '.', '.', '.', '.', '.', '.', '.']]
+
          self.enemy = 'B'
+         self.label = pyglet.text.Label("Player White", y=650, x=1000)
          self.mark_list = []
          self.tmp_list = print_valid_choice(self.board, self.enemy)
          for x in self.tmp_list:
@@ -49,14 +51,16 @@ class gameWindow(pyglet.window.Window):
                     else:
                         chess(x * self.black.width + 550, y * self.black.width + 290, self.white).draw()
 
+        self.label.draw()
+
         for cross in self.mark_list:
             cross.draw()
 
     def hit(self, take, list):
         for mark in list:
-            if take[0] in range(mark.x, mark.x + 39) and take[1] in range(mark.y, mark.y + 39):
+            if take[0] in range(mark.x, mark.x + 38) and take[1] in range(mark.y, mark.y + 38):
                 for x in self.tmp_list:
-                    if int(x/10) * self.black.width + 550 == mark.x:
+                    if int(x/10) * self.black.width + 550 == mark.x and int(x%10) * self.black.width + 290 == mark.y:
                         return x
         return False
 
@@ -65,13 +69,16 @@ class gameWindow(pyglet.window.Window):
             temp = self.hit([x, y], self.mark_list)
             if temp != False:
                 self.enemy = main(self.board, self.enemy, temp)
+                self.mark_list.clear()
+                self.tmp_list = print_valid_choice(self.board, self.enemy)
+                self.label.text = 'Player Black' if self.enemy == 'W' else 'Player White'
+
+                for x in self.tmp_list:
+                    self.mark_list.append(chess(int(x/10) * self.black.width + 550 , int(x%10) * self.black.width + 290, self.mark))
                 self.on_draw()
 
     def update(self, dt):
-        self.mark_list.clear()
-        self.tmp_list = print_valid_choice(self.board, self.enemy)
-        for x in self.tmp_list:
-            self.mark_list.append(chess(int(x/10) * self.black.width + 550 , int(x%10) * self.black.width + 290, self.mark))
+        pass
 
 
 
