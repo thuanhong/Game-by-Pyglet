@@ -60,10 +60,6 @@ def count(board):
     return w * 100 + b
 
 
-def choi(enemy):
-    print("Player B:" if enemy == 'W' else "Player W:", end=" ")
-
-
 def main(board, enemy, pos):
     diction = []
     print_valid_choice(board, enemy, diction)

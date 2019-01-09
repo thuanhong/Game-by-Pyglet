@@ -34,12 +34,13 @@ class gameWindow(pyglet.window.Window):
                       ['.', '.', '.', '.', '.', '.', '.', '.'],
                       ['.', '.', '.', '.', '.', '.', '.', '.']]
 
+         self.label = pyglet.text.Label("Player White",font_size=40 , y=650, x=50)
+
          self.enemy = 'B'
-         self.label = pyglet.text.Label("Player White", y=650, x=1000)
          self.mark_list = []
          self.tmp_list = print_valid_choice(self.board, self.enemy)
          for x in self.tmp_list:
-             self.mark_list.append(chess(int(x/10) * self.black.width + 550 , int(x%10) * self.black.width + 290, self.mark))
+             self.mark_list.append(chess(int(x/10) * self.black.width + 530 , int(x%10) * self.black.width + 230, self.mark))
 
     def on_draw(self):
         self.clear()
@@ -47,11 +48,12 @@ class gameWindow(pyglet.window.Window):
             for y in range(8):
                 if self.board[x][y] != '.':
                     if self.board[x][y] == 'B':
-                        chess(x * self.black.width + 550, y * self.black.width + 290, self.black).draw()
+                        chess(x * self.black.width + 530, y * self.black.width + 230, self.black).draw()
                     else:
-                        chess(x * self.black.width + 550, y * self.black.width + 290, self.white).draw()
+                        chess(x * self.black.width + 530, y * self.black.width + 230, self.white).draw()
 
         self.label.draw()
+
 
         for cross in self.mark_list:
             cross.draw()
@@ -60,22 +62,23 @@ class gameWindow(pyglet.window.Window):
         for mark in list:
             if take[0] in range(mark.x, mark.x + 38) and take[1] in range(mark.y, mark.y + 38):
                 for x in self.tmp_list:
-                    if int(x/10) * self.black.width + 550 == mark.x and int(x%10) * self.black.width + 290 == mark.y:
+                    if int(x/10) * self.black.width + 530 == mark.x and int(x%10) * self.black.width + 230 == mark.y:
+                        print(x)
                         return x
-        return False
+        return -1
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:
             temp = self.hit([x, y], self.mark_list)
-            if temp != False:
+            if temp != -1:
+                print("True")
                 self.enemy = main(self.board, self.enemy, temp)
                 self.mark_list.clear()
                 self.tmp_list = print_valid_choice(self.board, self.enemy)
                 self.label.text = 'Player Black' if self.enemy == 'W' else 'Player White'
 
                 for x in self.tmp_list:
-                    self.mark_list.append(chess(int(x/10) * self.black.width + 550 , int(x%10) * self.black.width + 290, self.mark))
-                self.on_draw()
+                    self.mark_list.append(chess(int(x/10) * self.black.width + 530 , int(x%10) * self.black.width + 230, self.mark))
 
     def update(self, dt):
         pass
