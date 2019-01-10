@@ -1,6 +1,6 @@
 import pyglet
 from tmp import *
-from pyglet.window import mouse
+from pyglet.window import mouse, key
 
 
 class chess:
@@ -33,14 +33,30 @@ class gameWindow(pyglet.window.Window):
                       ['.', '.', '.', '.', '.', '.', '.', '.'],
                       ['.', '.', '.', '.', '.', '.', '.', '.'],
                       ['.', '.', '.', '.', '.', '.', '.', '.']]
-
          self.label = pyglet.text.Label("Player White",font_size=40 , y=650, x=50)
+         self.text = pyglet.text.Label("Cannot play, press LEFT to play continue", font_size=30, y=650, x=400)
 
+         self.can_play = 2
          self.enemy = 'B'
          self.mark_list = []
          self.tmp_list = print_valid_choice(self.board, self.enemy)
          for x in self.tmp_list:
              self.mark_list.append(chess(int(x/10) * self.black.width + 530 , int(x%10) * self.black.width + 230, self.mark))
+
+
+    def reload():
+        self.can_play = 2
+        self.mark_list.clear()
+        self.tmp_list.clear()
+        self.enemy = 'B'
+        self.board = [['.', '.', '.', '.', '.', '.', '.', '.'],
+                     ['.', '.', '.', '.', '.', '.', '.', '.'],
+                     ['.', '.', '.', '.', '.', '.', '.', '.'],
+                     ['.', '.', '.', 'W', 'B', '.', '.', '.'],
+                     ['.', '.', '.', 'B', 'W', '.', '.', '.'],
+                     ['.', '.', '.', '.', '.', '.', '.', '.'],
+                     ['.', '.', '.', '.', '.', '.', '.', '.'],
+                     ['.', '.', '.', '.', '.', '.', '.', '.']]
 
     def on_draw(self):
         self.clear()
@@ -53,38 +69,54 @@ class gameWindow(pyglet.window.Window):
                         chess(x * self.black.width + 530, y * self.black.width + 230, self.white).draw()
 
         self.label.draw()
+        if self.mark_list == []:
+            self.text.draw()
+        else:
+            for cross in self.mark_list:
+                cross.draw()
 
+        if self.can_play == 0:
+            tmp = count(self.board)
+            self.result = pyglet.text.Label("Result | W : " + str(int(tmp/100)) + "| B : " + str(int(tmp%100))
+                                                  + ", Click E to exit, press R to reload",
+                                                  font_size=30, y=150, x=400)
+            self.result.draw()
 
-        for cross in self.mark_list:
-            cross.draw()
 
     def hit(self, take, list):
+        if list == []:
+            return 100
         for mark in list:
             if take[0] in range(mark.x, mark.x + 38) and take[1] in range(mark.y, mark.y + 38):
                 for x in self.tmp_list:
                     if int(x/10) * self.black.width + 530 == mark.x and int(x%10) * self.black.width + 230 == mark.y:
-                        print(x)
                         return x
         return -1
+
+    def on_key_press(self, symbol, modifiers):
+        if symbol == key.R:
+            if self.can_play == 0:
+                reload()
+        if symbol == key.E:
+            pyglet.app.exit()
+
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:
             temp = self.hit([x, y], self.mark_list)
             if temp != -1:
-                print("True")
-                self.enemy = main(self.board, self.enemy, temp)
+                self.list = main(self.board, self.enemy, temp, self.can_play)
+                self.enemy = self.list[0]
+                self.can_play = self.list[1]
                 self.mark_list.clear()
                 self.tmp_list = print_valid_choice(self.board, self.enemy)
+                self.text.draw()
                 self.label.text = 'Player Black' if self.enemy == 'W' else 'Player White'
-
                 for x in self.tmp_list:
                     self.mark_list.append(chess(int(x/10) * self.black.width + 530 , int(x%10) * self.black.width + 230, self.mark))
 
     def update(self, dt):
         pass
-
-
-
 
 if __name__ == '__main__':
     window = gameWindow(1280, 720, 'Game Demo')

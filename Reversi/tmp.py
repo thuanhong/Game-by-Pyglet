@@ -60,17 +60,23 @@ def count(board):
     return w * 100 + b
 
 
-def main(board, enemy, pos):
-    diction = []
-    print_valid_choice(board, enemy, diction)
-    for x in diction:
-        if pos == x[0]:
-            for y in x[1]:
-                board[y[0]][y[1]] = 'B' if enemy == 'W' else 'W'
+def main(board, enemy, pos, can):
 
-    board[int(pos/10)][int(pos%10)] = 'B' if enemy == 'W' else 'W'
+    if pos != 100:
+        diction = []
+        print_valid_choice(board, enemy, diction)
+
+        for x in diction:
+            if pos == x[0]:
+                for y in x[1]:
+                    board[y[0]][y[1]] = 'B' if enemy == 'W' else 'W'
+
+        board[int(pos/10)][int(pos%10)] = 'B' if enemy == 'W' else 'W'
+        can = 2
+    else:
+        can -= 1
     if enemy is 'B':
         enemy = 'W'
     else:
         enemy = 'B'
-    return enemy
+    return [enemy, can]
