@@ -44,7 +44,7 @@ class gameWindow(pyglet.window.Window):
              self.mark_list.append(chess(int(x/10) * self.black.width + 530 , int(x%10) * self.black.width + 230, self.mark))
 
 
-    def reload():
+    def reload(self):
         self.can_play = 2
         self.mark_list.clear()
         self.tmp_list.clear()
@@ -79,7 +79,7 @@ class gameWindow(pyglet.window.Window):
             tmp = count(self.board)
             self.result = pyglet.text.Label("Result | W : " + str(int(tmp/100)) + "| B : " + str(int(tmp%100))
                                                   + ", Click E to exit, press R to reload",
-                                                  font_size=30, y=150, x=400)
+                                                  font_size=30, y=150, x=200)
             self.result.draw()
 
 
@@ -96,7 +96,7 @@ class gameWindow(pyglet.window.Window):
     def on_key_press(self, symbol, modifiers):
         if symbol == key.R:
             if self.can_play == 0:
-                reload()
+                self.reload()
         if symbol == key.E:
             pyglet.app.exit()
 
