@@ -59,6 +59,12 @@ def count(board):
         w = w + x.count('W')
     return w * 100 + b
 
+def checkend(board):
+    for list in board:
+        if '.' in list:
+            return False
+    return True
+
 
 def main(board, enemy, pos, can):
 

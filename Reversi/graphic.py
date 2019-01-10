@@ -23,6 +23,8 @@ class gameWindow(pyglet.window.Window):
          self.white = pyglet.image.load('img/white.png')
          self.black = pyglet.image.load('img/black.png')
          self.mark = pyglet.image.load('img/mark.png')
+         self.chess = pyglet.image.load('img/chess.gif')
+         self.chess_board = chess(530, 230, self.chess)
          self.frame_rate = 1/60.0
 
          self.board = [['.', '.', '.', '.', '.', '.', '.', '.'],
@@ -60,6 +62,7 @@ class gameWindow(pyglet.window.Window):
 
     def on_draw(self):
         self.clear()
+        self.chess_board.draw()
         for x in range(8):
             for y in range(8):
                 if self.board[x][y] != '.':
@@ -75,11 +78,11 @@ class gameWindow(pyglet.window.Window):
             for cross in self.mark_list:
                 cross.draw()
 
-        if self.can_play == 0:
+        if self.can_play == 0 or checkend(self.board):
             tmp = count(self.board)
             self.result = pyglet.text.Label("Result | W : " + str(int(tmp/100)) + "| B : " + str(int(tmp%100))
                                                   + ", Click E to exit, press R to reload",
-                                                  font_size=30, y=150, x=200)
+                                                  font_size=30, y=150, x=100)
             self.result.draw()
 
 
