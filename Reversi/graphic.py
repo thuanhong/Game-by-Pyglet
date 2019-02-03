@@ -20,10 +20,12 @@ class chess:
 class gameWindow(pyglet.window.Window):
     def __init__(self, *args, **kwargs):
          super().__init__(*args, **kwargs)
+         #  import picture
          self.white = pyglet.image.load('img/white.png')
          self.black = pyglet.image.load('img/black.png')
          self.mark = pyglet.image.load('img/mark.png')
          self.chess = pyglet.image.load('img/chess.gif')
+
          self.chess_board = chess(530, 230, self.chess)
          self.frame_rate = 1/60.0
 
@@ -38,15 +40,15 @@ class gameWindow(pyglet.window.Window):
          self.label = pyglet.text.Label("Player White",font_size=40 , y=650, x=50)
          self.text = pyglet.text.Label("Cannot play, press LEFT to play continue", font_size=30, y=650, x=400)
 
-         self.can_play = 2
+         self.can_play = 2 # both 2 player can play
          self.enemy = 'B'
-         self.mark_list = []
+         self.mark_list = [] # contain valid choice (X on chess board)
          self.tmp_list = print_valid_choice(self.board, self.enemy)
          for x in self.tmp_list:
              self.mark_list.append(chess(int(x/10) * self.black.width + 530 , int(x%10) * self.black.width + 230, self.mark))
 
 
-    def reload(self):
+    def reload(self): # reload when start a new game
         self.can_play = 2
         self.mark_list.clear()
         self.tmp_list.clear()
@@ -63,7 +65,8 @@ class gameWindow(pyglet.window.Window):
     def on_draw(self):
         self.clear()
         self.chess_board.draw()
-        for x in range(8):
+
+        for x in range(8): # output chess board out display
             for y in range(8):
                 if self.board[x][y] != '.':
                     if self.board[x][y] == 'B':
@@ -78,7 +81,7 @@ class gameWindow(pyglet.window.Window):
             for cross in self.mark_list:
                 cross.draw()
 
-        if self.can_play == 0 or checkend(self.board):
+        if self.can_play == 0 or checkend(self.board): # when game over
             tmp = count(self.board)
             self.result = pyglet.text.Label("Result | W : " + str(int(tmp/100)) + "| B : " + str(int(tmp%100))
                                                   + ", Click E to exit, press R to reload",
@@ -86,7 +89,7 @@ class gameWindow(pyglet.window.Window):
             self.result.draw()
 
 
-    def hit(self, take, list):
+    def hit(self, take, list): # return the move if click hit mark (X)
         if list == []:
             return 100
         for mark in list:
@@ -96,10 +99,9 @@ class gameWindow(pyglet.window.Window):
                         return x
         return -1
 
-    def on_key_press(self, symbol, modifiers):
+    def on_key_press(self, symbol, modifiers): # take mouse event from keyboard
         if symbol == key.R:
-            if self.can_play == 0:
-                self.reload()
+            self.reload()
         if symbol == key.E:
             pyglet.app.exit()
 
@@ -115,7 +117,7 @@ class gameWindow(pyglet.window.Window):
                 self.tmp_list = print_valid_choice(self.board, self.enemy)
                 self.text.draw()
                 self.label.text = 'Player Black' if self.enemy == 'W' else 'Player White'
-                for x in self.tmp_list:
+                for x in self.tmp_list: # create an new mark list
                     self.mark_list.append(chess(int(x/10) * self.black.width + 530 , int(x%10) * self.black.width + 230, self.mark))
 
     def update(self, dt):

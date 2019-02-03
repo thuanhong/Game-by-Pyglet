@@ -1,4 +1,4 @@
-def getPos(bo, x, y, enemy):
+def getPos(bo, x, y, enemy): # take position of enemy in 8 directions
     tmp0 = [[x, y-1], [x, y+1], [x+1, y], [x-1, y]]
     tmp1 = [[x-1, y-1], [x-1, y+1], [x+1, y-1], [x+1, y+1]]
     arr = tmp0 + tmp1
@@ -11,7 +11,7 @@ def getPos(bo, x, y, enemy):
     return pos
 
 
-def getValue(bo, statePos, x, y, enemy, diction):
+def getValue(bo, statePos, x, y, enemy, diction): # take positions be flip
     step = [statePos[0] - x, statePos[1] - y]
     list = []
 
@@ -30,15 +30,15 @@ def getValue(bo, statePos, x, y, enemy, diction):
             return
 
 
-def print_valid_choice(bo, enemy, diction = []):
+def print_valid_choice(bo, enemy, diction = []): # find move can choice
     the_move = []
     dic = {}
-    for x in range(len(bo)):
+    for x in range(len(bo)): # find positions to be enemy
         for y in range(len(bo)):
             if bo[x][y] != enemy and bo[x][y] != '.':
                 dic[x * 10 + y] = getPos(bo, x, y, enemy)
 
-    for x in dic:
+    for x in dic: # return a list contain move can be choice
         for y in dic[x]:
             row = int(x / 10)
             column = int(x % 10)
@@ -51,7 +51,7 @@ def print_valid_choice(bo, enemy, diction = []):
     return the_move
 
 
-def count(board):
+def count(board): # count score of both 2 player
     b = 0
     w = 0
     for x in board:
@@ -59,7 +59,7 @@ def count(board):
         w = w + x.count('W')
     return w * 100 + b
 
-def checkend(board):
+def checkend(board): # true if the game cannot continue
     for list in board:
         if '.' in list:
             return False
@@ -72,7 +72,7 @@ def main(board, enemy, pos, can):
         diction = []
         print_valid_choice(board, enemy, diction)
 
-        for x in diction:
+        for x in diction: # Flip all chess have choice follow move choice
             if pos == x[0]:
                 for y in x[1]:
                     board[y[0]][y[1]] = 'B' if enemy == 'W' else 'W'
